@@ -1,31 +1,35 @@
 package hashset
 
-type CustomHashSetMap map[string]struct{}
+type CustomHashSetMap map[interface{}]struct{}
 
 type HashSet struct {
 	set CustomHashSetMap
 }
 
-func (h *HashSet) Size() int {
-	return len(h.set)
+func New(values ...interface{}) HashSet {
+	hs := HashSet{set: make(CustomHashSetMap)}
+	for _, value := range values {
+		hs.set[value] = struct{}{}
+	}
+	return hs
 }
 
-func (h *HashSet) Add(value string) {
+func (hs HashSet) Size() int {
+	return len(hs.set)
+}
+
+func (h HashSet) Add(value interface{}) {
 	h.set[value] = struct{}{}
+
+	//if _, ok := h.set[value]; ok {
+	//	return errors.New("Cannot add duplicate values.")
+	//}
 }
 
-func (h *HashSet) ToArray() []string {
-	var result []string
+func (h *HashSet) ToArray() []interface{} {
+	var result []interface{}
 	for key := range h.set {
 		result = append(result, key)
 	}
 	return result
-}
-
-func New(values ...string) *HashSet {
-	set := HashSet{make(CustomHashSetMap)}
-	for _, value := range values {
-		set.set[value] = struct{}{}
-	}
-	return &set
 }
